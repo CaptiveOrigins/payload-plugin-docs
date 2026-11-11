@@ -178,7 +178,9 @@ describe('the check, and reading the tree', () => {
     for (const id of ['a', 'b']) await reviewAndPublish((await page(id)).id)
     expect(await checkDocs(payload)).toEqual({ ok: true, problems: [] })
     const b = await page('b')
-    await payload.update({ collection: 'docs-pages' as never, id: b.id, data: { body: 'See [this](/docs/animals/nowhere).' } as never, ...as(editor) })
+    // Editing a published page's words without a new review is refused; as a draft, then reviewed, it can go out.
+    await expect(payload.update({ collection: 'docs-pages' as never, id: b.id, data: { body: 'See [this](/docs/animals/nowhere).' } as never, ...as(editor) })).rejects.toThrow(/reviewed/)
+    await payload.update({ collection: 'docs-pages' as never, id: b.id, data: { body: 'See [this](/docs/animals/nowhere).', _status: 'draft' } as never, draft: true, ...as(editor) })
     await reviewAndPublish(b.id)
     expect((await checkDocs(payload)).problems).toEqual([{ kind: 'brokenLink', ref: String(b.id), detail: '/docs/animals/nowhere' }])
     await payload.db.updateOne({ collection: 'docs-pages', where: { id: { equals: b.id } }, data: { body: 'Set DATABASE_URL.' } } as never)

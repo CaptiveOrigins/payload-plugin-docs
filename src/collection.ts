@@ -20,7 +20,8 @@ const beforeChange =
     const reviewChanged = data.review !== undefined && JSON.stringify(data.review ?? null) !== JSON.stringify(originalDoc?.review ?? null)
     if (reviewChanged && !sync && !(await yes(o.review, { req, data } as never))) throw new DocsError('notReviewer', 'Only a reviewer can mark a page reviewed.', 403)
     // A review counts only for the words it saw.
-    if (next.review?.hash && next.review.hash !== hash) data.review = null
+    const EMPTY = { by: null, at: null, notes: null, hash: null }
+    if (next.review?.hash && next.review.hash !== hash) data.review = EMPTY
     if (reviewChanged && data.review) data.review = { ...data.review, hash, at: data.review.at ?? new Date().toISOString() }
     if (next._status === 'published') {
       const hits = lint(o, `${next.title ?? ''}\n${next.summary ?? ''}\n${textOf(next.body)}`)

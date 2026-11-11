@@ -58,7 +58,7 @@ export async function onFeatureChange(payload: Payload, args: { source: string; 
     const w = await words(payload, f, args.req)
     // The live page keeps its words; it's flagged, and the fresh draft waits for review.
     await payload.db.updateOne({ collection: o.slug, where: { id: { equals: page.id } }, data: { outOfDate: true, archived: false } } as never)
-    await payload.update({ collection: o.slug as CollectionSlug, id: page.id, data: { ...base, summary: w.summary, body: w.body, outOfDate: true, archived: false } as never, draft: true, ...sys, context: ctx })
+    await payload.update({ collection: o.slug as CollectionSlug, id: page.id, data: { ...base, summary: w.summary, body: w.body, outOfDate: true, archived: false, _status: 'draft' } as never, draft: true, ...sys, context: ctx })
     return 'outOfDate'
   } catch (error) {
     payload.logger.error({ err: { name: (error as Error)?.name }, msg: 'docs: a feature change was not applied to its page' })
