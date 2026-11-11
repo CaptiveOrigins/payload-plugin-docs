@@ -17,9 +17,11 @@ async function pageFor(payload: Payload, source: string, featureId: string): Pro
   return ((await payload.find({ collection: o.slug as CollectionSlug, where, limit: 1, pagination: false, draft: true, ...sys })).docs as Doc[])[0] ?? null
 }
 
-/** A slug not yet used in this section: two features with the same title get `name` and `name-2`. */
+/** A slug not yet used in this section, and not one of the site's collection names: `name`, `name-2`, `name-page`. */
 async function freeSlug(payload: Payload, sectionKey: string, slug: string): Promise<string> {
   const o = configOf(payload)
+  // A slug that matches one of the site's collection names would be refused by the lint: give it a suffix.
+  if (o.slugs.some((s) => s.toLowerCase() === slug.toLowerCase())) slug = `${slug}-page`
   const taken = new Set(((await payload.find({ collection: o.slug as CollectionSlug, where: { sectionKey: { equals: sectionKey } }, pagination: false, draft: false, select: { slug: true } as never, ...sys })).docs as Doc[]).map((d) => d.slug))
   if (!taken.has(slug)) return slug
   for (let i = 2; ; i++) if (!taken.has(`${slug}-${i}`)) return `${slug}-${i}`

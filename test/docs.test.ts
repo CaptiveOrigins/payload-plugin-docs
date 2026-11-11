@@ -229,6 +229,11 @@ describe('what the security read found', () => {
     features = [f('a', { title: 'Same' }), f('b', { title: 'Same' })]
     await syncDocs(payload)
     expect([(await page('a')).slug, (await page('b')).slug].sort()).toEqual(['same', 'same-2'])
+    // A feature titled like a collection gets a slug the lint won't refuse, so it can be published.
+    features = [f('c', { title: 'Animal Records' })]
+    await syncDocs(payload)
+    expect((await page('c')).slug).toBe('animal-records-page')
+    await reviewAndPublish((await page('c')).id)
     expect((await checkDocs(payload)).problems.some((p) => p.kind === 'duplicate')).toBe(false)
   })
 
@@ -287,7 +292,7 @@ describe('what the security read found', () => {
 
   it('sees through escaping: Markdown, HTML entities and comments, invisible characters, look-alike hyphens', () => {
     const o = payload.config.custom!.docs as never
-    for (const t of ['DATABASE\\_URL', 'DATABASE&#95;URL', 'DATABASE<!-- -->_URL', 'DATA\u200BBASE_URL', 'secret\\-project\\-name', 'secret\u2011project\u2011name', 'animal\\-records', 'The SECRET-PROJECT-NAME'])
+    for (const t of ['DATABASE\\_URL', 'DATABASE&#95;URL', 'DATABASE<!-- -->_URL', 'DATA\u200BBASE_URL', 'secret\\-project\\-name', 'secret\u2011project\u2011name', 'animal\\-records', 'The SECRET-PROJECT-NAME', 'DATABASE<b></b>_URL', 'DATABASE<span>_URL</span>', 'secret-<i></i>project-name'])
       expect(lint(o, t).length, t).toBeGreaterThan(0)
   })
 
