@@ -18,3 +18,19 @@ Kept by this repo's owning session, per `~/Code/CLAUDE.md`, "Test self-audits". 
 | The tree and a page by path | `the check > gives the site a tree…` |
 
 Mutation check: 14 guards, all caught (two after tests were added: a stale review is cleared, and an archived page counts as missing).
+
+## 2026-11-10: after the security read of 8250b10
+
+Ten tests added in `what the security read found`:
+- drafts and versions for editors only;
+- approval needs `approved: true`, and the plugin stamps the hash;
+- many extra pages, and distinct paths for same-titled features;
+- out-of-date cleared on approval, so the check goes green;
+- archived pages hidden from draft reads;
+- section and path linted and reviewed, and internal fields hidden;
+- failing and empty sources leave pages alone and are reported;
+- a failed draft is retried, and the generator gets only the feature's fields;
+- the lint sees through escaping (Markdown, entities, comments, invisible characters, look-alike hyphens);
+- rich-text links, the allow-list and members pages.
+
+Mutation check: 17 guards; all caught but two that cover each other. Approval needs both the `approved` tick and a hash the plugin stamps only when it's ticked, so dropping either check alone is caught by the other. That's kept as two layers.

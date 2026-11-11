@@ -27,8 +27,28 @@ export function textOf(body: unknown): string {
   return out.join('\n')
 }
 
+/**
+ * Text as a reader sees it, so escaping can't hide a leak: Markdown backslash escapes removed, HTML comments and
+ * tags' wrappers dropped, entities decoded, invisible characters removed, look-alike hyphens and spaces made plain.
+ */
+export function asRead(text: string): string {
+  return text
+    .normalize('NFKC')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/&#x([0-9a-f]+);?/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);?/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&(lowbar|UnderBar);/g, '_')
+    .replace(/&(hyphen|dash|minus);/g, '-')
+    .replace(/&(nbsp|ensp|emsp|thinsp);/g, ' ')
+    .replace(/\\([\\`*_{}[\]()#+\-.!|<>~])/g, '$1')
+    .replace(/[\u200B-\u200D\u2060\uFEFF\u00AD]/g, '')
+    .replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-')
+    .replace(/[\u00A0\u2007\u202F]/g, ' ')
+}
+
 /** Everything on a page that looks internal. Empty means clean. */
-export function lint(o: Resolved, text: string): LintHit[] {
+export function lint(o: Resolved, raw: string): LintHit[] {
+  const text = asRead(raw)
   const hits: LintHit[] = []
   const allowed = (s: string) => o.allow.some((a) => a.toLowerCase() === s.toLowerCase())
   for (const { kind, re } of RULES) for (const m of text.matchAll(re)) if (!allowed(m[0])) hits.push({ kind, text: m[0] })

@@ -1,6 +1,6 @@
 # 0001: Docs design record
 
-Status: **draft** (2026-11-10). Nothing is built yet. Task K282, P3. Built from the owner's decisions of 2026-11-09 in captive-origins `docs/feature-docs-proposal.md`, which this record follows except where it says otherwise.
+Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/decisions.md. Task K282, P3. Built from the owner's decisions of 2026-11-09 in captive-origins `docs/feature-docs-proposal.md`, which this record follows except where it says otherwise.
 
 ## The owner's decisions (2026-11-09)
 

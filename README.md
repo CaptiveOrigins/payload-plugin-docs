@@ -2,10 +2,11 @@
 
 Docs for Payload: a docs page for every feature your site lists, made and kept up to date by hook, with hand-written pages beside them, a publish-time lint for internals, and a check that nothing is missing.
 
-**Status:** 0.1.0, not on npm yet. 10 tests pass against Payload 3.92 with an in-memory MongoDB replica set and a fake generator (no AI is called). They cover pages following features, the lint, reviews, publishing rules, public access, the check and the tree. No site uses it yet.
+**Status:** 0.1.0, not on npm yet. 20 tests pass against Payload 3.92 with an in-memory MongoDB replica set and a fake generator (no AI is called). They cover pages following features, the lint, reviews, publishing rules, public access, the check and the tree. No site uses it yet.
 
 ## What it does
 
+- **Sources that fail or come back empty** leave their pages alone, and the check reports them. A failed draft is tried again at the next sync.
 - **A page for every feature.** Features come from one or more sources: a few lines each, from a roadmap plugin's catalog or your own list.
   - A source calls `onFeatureChange` from its own hook. `syncDocs(payload)`, nightly, reads every source and catches anything a hook missed.
   - A new feature gets a draft page.
@@ -26,21 +27,23 @@ Docs for Payload: a docs page for every feature your site lists, made and kept u
 
   `allow` lets public names through (YouTube, Stripe).
 - **Reviews:**
-  - Only reviewers (`access.review`) mark a page reviewed.
-  - A review holds only for the words it saw: editing them clears it.
+  - Only reviewers (`access.review`) review, and a page is approved only when the reviewer ticks `approved`. A note alone approves nothing.
+  - An approval holds only for the words it saw: the section, path, title, summary and body. Editing any of them clears it.
+  - Publishing an approved page clears its out-of-date flag.
   - A page can't be published unreviewed, so editing a published page's words means a draft and a new review.
 - **`checkDocs(payload)`**, for a nightly job and your pre-release step, lists:
   - features with no page;
   - out-of-date pages;
-  - available or members features that aren't published;
+  - features whose page isn't published, planned ones included, so /docs always holds at least everything in Features;
+  - two pages for one feature, or two pages on one path;
+  - a source that failed, or returned nothing while it has pages;
   - `/docs` links that go nowhere;
   - lint hits on published pages.
 
-  Planned features may stay drafts.
 - **Reading:**
   - `docsTree(payload)` gives the published sections and pages, for your `/docs` routes.
   - `docsPage(payload, '/docs/section/slug')` gives one page.
-  - The public sees only published pages that aren't archived, without review details. Editors (`access.edit`) see everything.
+  - The public sees only published pages that aren't archived, without review details or the plugin's own fields. Drafts and old versions are for editors (`access.edit`) only.
 - **Bodies are Markdown**, so your site renders them its own way.
 
 ## Install
@@ -61,7 +64,7 @@ docsPlugin({
 })
 
 // In your feature source's own hook:
-await onFeatureChange(payload, { source: 'catalog', feature }, req) // or { source, removedId }
+await onFeatureChange(payload, { source: 'catalog', feature, req }) // or { source, removedId, req }
 ```
 
 Run `syncDocs` and `checkDocs` nightly. A feature source can also register itself at `config.custom.docs.sources`, with no import.
