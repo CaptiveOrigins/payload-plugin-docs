@@ -146,6 +146,7 @@ describe('the lint, reviews and publishing', () => {
     await expect(payload.update({ collection: 'docs-pages' as never, id, data: { review: { by: 'e1' } } as never, ...as(editor) })).rejects.toThrow(/reviewer/)
     await payload.update({ collection: 'docs-pages' as never, id, data: { review: { by: 'r1' } } as never, ...as(reviewer) })
     await payload.update({ collection: 'docs-pages' as never, id, data: { body: 'Changed after the review.' } as never, ...as(editor) })
+    expect(((await payload.findByID({ collection: 'docs-pages' as never, id, overrideAccess: true, draft: true })) as Doc).review?.hash ?? null).toBeNull() // the review was for other words
     await expect(payload.update({ collection: 'docs-pages' as never, id, data: { _status: 'published' } as never, ...as(editor) })).rejects.toThrow(/reviewed/)
     await payload.update({ collection: 'docs-pages' as never, id, data: { body: 'Set DATABASE_URL first.' } as never, ...as(editor) })
     await payload.update({ collection: 'docs-pages' as never, id, data: { review: { by: 'r1' } } as never, ...as(reviewer) })
@@ -185,6 +186,9 @@ describe('the check, and reading the tree', () => {
     expect((await checkDocs(payload)).problems).toEqual([{ kind: 'brokenLink', ref: String(b.id), detail: '/docs/animals/nowhere' }])
     await payload.db.updateOne({ collection: 'docs-pages', where: { id: { equals: b.id } }, data: { body: 'Set DATABASE_URL.' } } as never)
     expect((await checkDocs(payload)).problems.map((p) => p.kind)).toContain('lint')
+    // A page archived while its feature is still listed counts as missing.
+    await payload.db.updateOne({ collection: 'docs-pages', where: { id: { equals: (await page('p')).id } }, data: { archived: true } } as never)
+    expect((await checkDocs(payload)).problems.map((p) => p.kind)).toContain('missing')
     features = [f('a', { version: 'v2' }), f('b'), f('p', { stage: 'planned' })]
     expect((await checkDocs(payload)).problems.map((p) => p.kind)).toContain('outOfDate')
   })
