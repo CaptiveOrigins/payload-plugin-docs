@@ -2,7 +2,7 @@ import type { CollectionSlug, Payload, Where } from 'payload'
 
 import { pageText } from './collection.js'
 import { lint } from './lint.js'
-import type { Feature, Req } from './types.js'
+import type { Feature, FeatureSource, Req } from './types.js'
 import { configOf, slugOf } from './util.js'
 
 type Doc = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -15,6 +15,16 @@ async function pageFor(payload: Payload, source: string, featureId: string): Pro
   const where: Where = { and: [{ source: { equals: source } }, { featureId: { equals: featureId } }] }
   // The latest version, draft or not: a fresh draft's version mark is what tells the next sync whether to try again.
   return ((await payload.find({ collection: o.slug as CollectionSlug, where, limit: 1, pagination: false, draft: true, ...sys })).docs as Doc[])[0] ?? null
+}
+
+/** Every source: the plugin's own and those other plugins registered at `config.custom.docsSources`. Names are unique. */
+export function sourcesOf(payload: Payload): FeatureSource[] {
+  const o = configOf(payload)
+  const extra = (payload.config.custom?.docsSources ?? []) as FeatureSource[]
+  const all = [...o.sources, ...(Array.isArray(extra) ? extra : [])]
+  const names = all.map((x) => x.name)
+  if (new Set(names).size !== names.length) throw new Error('Docs: two feature sources have the same name.')
+  return all
 }
 
 /** A slug not yet used in this section, and not one of the site's collection names: `name`, `name-2`, `name-page`. */
@@ -88,7 +98,7 @@ export async function syncDocs(payload: Payload, req?: Req) {
   const o = configOf(payload)
   const tally = { made: 0, outOfDate: 0, same: 0, archived: 0, error: 0 }
   const failed: string[] = []
-  for (const source of o.sources) {
+  for (const source of sourcesOf(payload)) {
     let features: Feature[]
     try {
       features = await source.list({ payload, req })
@@ -127,7 +137,7 @@ export async function checkDocs(payload: Payload, req?: Req): Promise<{ ok: bool
   const problems: DocsProblem[] = []
   const all = (await payload.find({ collection: o.slug as CollectionSlug, pagination: false, draft: false, ...sys })).docs as Doc[]
   const live = all.filter((p) => p._status === 'published' && !p.archived)
-  for (const source of o.sources) {
+  for (const source of sourcesOf(payload)) {
     let features: Feature[]
     try {
       features = await source.list({ payload, req })

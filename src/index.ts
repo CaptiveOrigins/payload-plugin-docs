@@ -1,5 +1,5 @@
 export { docsPlugin } from './plugin.js'
-export { checkDocs, docsPage, docsTree, onFeatureChange, syncDocs, type DocsProblem } from './sync.js'
+export { checkDocs, docsPage, docsTree, onFeatureChange, sourcesOf, syncDocs, type DocsProblem } from './sync.js'
 export { lint, textOf, type LintHit } from './lint.js'
 export { DocsError } from './util.js'
 export type { DocsOptions, Feature, FeatureSource, Generate, Stage } from './types.js'

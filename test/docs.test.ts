@@ -1,6 +1,6 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { buildConfig, getPayload, type Payload } from 'payload'
+import { buildConfig, getPayload, type Config, type Payload } from 'payload'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 import { checkDocs, docsPage, docsPlugin, docsTree, lint, onFeatureChange, syncDocs, textOf, type Feature } from '../src/index.js'
@@ -14,6 +14,7 @@ let features: Feature[] = []
 let others: Feature[] = []
 let generateThrows = false
 let sourceThrows = false
+let lateFeatures: Feature[] = []
 const generated: Doc[] = []
 
 const f = (id: string, extra: Partial<Feature> = {}): Feature => ({ id, section: { key: 'animals', title: 'Animals' }, title: `Feature ${id}`, summary: `What ${id} does`, stage: 'available', version: 'v1', ...extra })
@@ -58,6 +59,8 @@ beforeAll(async () => {
           privateTerms: ['secret-project-name'],
           allow: ['YouTube'],
         }),
+        // Another plugin, after Docs, registers a source without importing it.
+        (c: Config) => ({ ...c, custom: { ...c.custom, docsSources: [{ name: 'late-plugin', list: async () => lateFeatures }] } }),
       ],
     }),
   })
@@ -76,6 +79,7 @@ beforeEach(async () => {
   others = []
   generateThrows = false
   sourceThrows = false
+  lateFeatures = []
   generated.length = 0
   const models = (payload.db as unknown as { collections: Record<string, { collection: { deleteMany: (q: object) => Promise<unknown> } }>; versions: Record<string, { collection: { deleteMany: (q: object) => Promise<unknown> } }> })
   await models.collections['docs-pages']!.collection.deleteMany({})
@@ -309,5 +313,15 @@ describe('what the security read found', () => {
     await reviewAndPublish((await page('m')).id)
     await payload.db.updateOne({ collection: 'docs-pages', where: { id: { equals: (await page('m')).id } }, data: { archived: true } } as never)
     expect(await docsPage(payload, '/docs/animals/feature-m')).toBeNull()
+  })
+})
+
+describe('sources from other plugins', () => {
+  it('reads a source another plugin registered after Docs, and gives it onFeatureChange through the config', async () => {
+    lateFeatures = [f('x', { title: 'From another plugin' })]
+    await syncDocs(payload)
+    expect((await page('x', 'late-plugin')).title).toBe('From another plugin')
+    const fn = (payload.config.custom!.docs as { onFeatureChange?: unknown }).onFeatureChange as typeof onFeatureChange
+    expect(await fn(payload, { source: 'late-plugin', removedId: 'x' })).toBe('archived')
   })
 })
