@@ -137,7 +137,14 @@ export async function checkDocs(payload: Payload, req?: Req): Promise<{ ok: bool
   const problems: DocsProblem[] = []
   const all = (await payload.find({ collection: o.slug as CollectionSlug, pagination: false, draft: false, ...sys })).docs as Doc[]
   const live = all.filter((p) => p._status === 'published' && !p.archived)
-  for (const source of sourcesOf(payload)) {
+  let sources: FeatureSource[]
+  try {
+    sources = sourcesOf(payload)
+  } catch {
+    // Two sources with one name: reported, not thrown, so the nightly job still gets its list.
+    return { ok: false, problems: [{ kind: 'duplicate', ref: 'sources', detail: 'two feature sources have the same name' }] }
+  }
+  for (const source of sources) {
     let features: Feature[]
     try {
       features = await source.list({ payload, req })
