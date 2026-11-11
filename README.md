@@ -46,6 +46,16 @@ Docs for Payload: a docs page for every feature your site lists, made and kept u
   - The public sees only published pages that aren't archived, without review details or the plugin's own fields. Drafts and old versions are for editors (`access.edit`) only.
 - **Bodies are Markdown**, so your site renders them its own way.
 
+## On its own, and with others
+
+**On its own.** Docs needs the MongoDB adapter, `access.edit` and `access.review`, and at least one feature source: a `list` function you write. Drafts come from your own `generate`, or from each feature's summary and details. It doesn't import any other Captive Origins plugin.
+
+**Works with:**
+
+- **Roadmap** (`@captiveorigins/payload-plugin-roadmap`): with `catalog: { docs: true }`, Roadmap's features catalog adds itself to `config.custom.docsSources` and calls `onFeatureChange` when an entry changes. No import either way, and plugin order doesn't matter.
+
+**Family.** Docs is in the Library family, with Watchlist and Wikipedia, which are named but not built yet. Roadmap is in a different family (Patronage), so that pairing is "works with". The families are a working draft that may change.
+
 ## Install
 
 ```sh
