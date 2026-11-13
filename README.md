@@ -52,18 +52,18 @@ Docs for Payload: a docs page for every feature your site lists, made and kept u
 
 **Works with:**
 
-- **Roadmap** (`@captiveorigins/payload-plugin-roadmap`): with `catalog: { docs: true }`, Roadmap's features catalog adds itself to `config.custom.docsSources` and calls `onFeatureChange` when an entry changes. No import either way, and plugin order doesn't matter.
+- **Roadmap** (`@extantape/payload-plugin-roadmap`): with `catalog: { docs: true }`, Roadmap's features catalog adds itself to `config.custom.docsSources` and calls `onFeatureChange` when an entry changes. No import either way, and plugin order doesn't matter.
 
 **Family.** Docs is in the Library family, with Watchlist and Wikipedia, which are named but not built yet. Roadmap is in a different family (Patronage), so that pairing is "works with". The families are a working draft that may change.
 
 ## Install
 
 ```sh
-npm install @captiveorigins/payload-plugin-docs
+npm install @extantape/payload-plugin-docs
 ```
 
 ```ts
-import { docsPlugin, onFeatureChange } from '@captiveorigins/payload-plugin-docs'
+import { docsPlugin, onFeatureChange } from '@extantape/payload-plugin-docs'
 
 docsPlugin({
   sources: [{ name: 'catalog', list: async ({ payload }) => myFeatures(payload) }],

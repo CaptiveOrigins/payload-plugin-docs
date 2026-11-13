@@ -12,7 +12,7 @@ Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/d
 - **Planned features** get a short page marked Planned.
 - **Timing:** built after tour v3.
 
-Name approved 2026-11-10: **Docs**, `@captiveorigins/payload-plugin-docs`. MIT. Public from its first push (D5); this replaces "private until the owner's yes" in the proposal.
+Name approved 2026-11-10: **Docs**, `@extantape/payload-plugin-docs`. MIT. Public from its first push (D5); this replaces "private until the owner's yes" in the proposal.
 
 ## What changes from the proposal: features through an adapter (D2)
 
