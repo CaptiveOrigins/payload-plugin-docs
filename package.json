@@ -1,10 +1,10 @@
 {
-  "name": "@captiveorigins/payload-plugin-docs",
+  "name": "@extantape/payload-plugin-docs",
   "version": "0.1.0",
   "description": "Docs for Payload: a docs page for every feature your site lists, made and kept up to date by hook, with hand-written pages beside them, a publish-time lint for internals, and a check that nothing is missing.",
-  "homepage": "https://github.com/CaptiveOrigins/payload-plugin-docs#readme",
+  "homepage": "https://github.com/ExtantApe/payload-plugin-docs#readme",
   "bugs": {
-    "url": "https://github.com/CaptiveOrigins/payload-plugin-docs/issues"
+    "url": "https://github.com/ExtantApe/payload-plugin-docs/issues"
   },
   "keywords": [
     "payload",
@@ -21,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CaptiveOrigins/payload-plugin-docs.git"
+    "url": "git+https://github.com/ExtantApe/payload-plugin-docs.git"
   },
   "type": "module",
   "exports": {

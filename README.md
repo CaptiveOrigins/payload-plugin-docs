@@ -49,11 +49,11 @@ Docs for Payload: a docs page for every feature your site lists, made and kept u
 ## Install
 
 ```sh
-npm install @captiveorigins/payload-plugin-docs
+npm install @extantape/payload-plugin-docs
 ```
 
 ```ts
-import { docsPlugin, onFeatureChange } from '@captiveorigins/payload-plugin-docs'
+import { docsPlugin, onFeatureChange } from '@extantape/payload-plugin-docs'
 
 docsPlugin({
   sources: [{ name: 'catalog', list: async ({ payload }) => myFeatures(payload) }],
