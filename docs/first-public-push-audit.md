@@ -1,6 +1,6 @@
 # First public push audit
 
-By the Plugins Lead, 2026-11-10, before the repo's first push (D5).
+Run 2026-11-10, before the repo's first push.
 
 | Check | Result |
 | --- | --- |

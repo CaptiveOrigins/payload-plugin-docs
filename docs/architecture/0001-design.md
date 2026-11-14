@@ -1,6 +1,6 @@
 # 0001: Docs design record
 
-Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/decisions.md. Task K282, P3. Built from the owner's decisions of 2026-11-09 in the site's feature docs proposal, which this record follows except where it says otherwise.
+Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/decisions.md. Built from the owner's decisions of 2026-11-09 in the site's feature docs proposal, which this record follows except where it says otherwise.
 
 ## The owner's decisions (2026-11-09)
 
@@ -12,11 +12,11 @@ Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/d
 - **Planned features** get a short page marked Planned.
 - **Timing:** built after tour v3.
 
-Name approved 2026-11-10: **Docs**, `@extantape/payload-plugin-docs`. MIT. Public from its first push (D5); this replaces "private until the owner's yes" in the proposal.
+Name approved 2026-11-10: **Docs**, `@extantape/payload-plugin-docs`. MIT. Public from its first push; this replaces "private until the owner's yes" in the proposal.
 
-## What changes from the proposal: features through an adapter (D2)
+## What changes from the proposal: features through an adapter
 
-The proposal had Docs "extend the features plugin" (the roadmap plugin's catalog). Under D2, plugins don't depend on each other, so Docs reads features through a **source** adapter that any plugin or site can give:
+The proposal had Docs "extend the features plugin" (the roadmap plugin's catalog). Plugins don't depend on each other, so Docs reads features through a **source** adapter that any plugin or site can give:
 
 ```ts
 type FeatureSource = {
@@ -60,7 +60,7 @@ type Feature = { id: string; section: { key: string; title: string }; title: str
 - Drafts, reviews and the out-of-date flags are for editors (`access.edit`, required).
 - Only reviewers set a review (`access.review`, required).
 
-## Seed World (D8)
+## Seed data
 
 A new `docs-pages` collection. For the tour: a few sections, with one page each for available, members, in-progress and planned, plus one extra page.
 
@@ -76,4 +76,4 @@ A new `docs-pages` collection. For the tour: a few sections, with one page each 
 
 ## Rough time
 
-About 3 session days for the plugin, as in the proposal. The site's routes and the 74 pages are the Site lead's, with Claude's review and the owner's spot-check.
+About 3 session days for the plugin, as in the proposal. The site's routes and the 74 pages are the site's work, with Claude's review and the owner's spot-check.
