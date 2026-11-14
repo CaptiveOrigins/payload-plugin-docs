@@ -1,6 +1,6 @@
 # 0001: Docs design record
 
-Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/decisions.md. Task K282, P3. Built from the owner's decisions of 2026-11-09 in captive-origins `docs/feature-docs-proposal.md`, which this record follows except where it says otherwise.
+Status: **built** (2026-11-10), 0.1.0. The security read's changes are in docs/decisions.md. Task K282, P3. Built from the owner's decisions of 2026-11-09 in the site's feature docs proposal, which this record follows except where it says otherwise.
 
 ## The owner's decisions (2026-11-09)
 
@@ -42,7 +42,7 @@ type Feature = { id: string; section: { key: string; title: string }; title: str
   - a new feature gets a generated draft;
   - changed wording marks the page out of date, with a fresh draft beside it;
   - a removed feature's page is archived, never deleted.
-- **Generation goes through the site's own function** (`generate({ feature, uiText })`). The site makes the model call, so on Captive Origins it runs through AI Budget's `withAiBudget` (job `docs`). Docs never calls an AI itself and never reads source code, config or the schema.
+- **Generation goes through the site's own function** (`generate({ feature, uiText })`). The site makes the model call, so on the first site it runs through AI Budget's `withAiBudget` (job `docs`). Docs never calls an AI itself and never reads source code, config or the schema.
 - **The security lint** refuses publishing a page that holds env-var names, file paths, collection or field slugs, internal hosts, IP addresses, key-like strings, or the site's private terms. It has an allow-list for public names.
 - **Review rules:** a page can't publish unreviewed, and editing the body clears the review.
 - **`checkDocs(payload)`**, for the nightly job and the pre-release step, fails on:

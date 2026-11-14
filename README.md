@@ -48,7 +48,7 @@ Docs for Payload: a docs page for every feature your site lists, made and kept u
 
 ## On its own, and with others
 
-**On its own.** Docs needs the MongoDB adapter, `access.edit` and `access.review`, and at least one feature source: a `list` function you write. Drafts come from your own `generate`, or from each feature's summary and details. It doesn't import any other Captive Origins plugin.
+**On its own.** Docs needs the MongoDB adapter, `access.edit` and `access.review`, and at least one feature source: a `list` function you write. Drafts come from your own `generate`, or from each feature's summary and details. It doesn't import any other plugin.
 
 **Works with:**
 

@@ -9,5 +9,5 @@ By the Plugins Lead, 2026-11-10, before the repo's first push (D5).
 | Email addresses in history | only the noreply author address |
 | Build output, `node_modules`, `.env`, `.secrets/` | never committed |
 | Leak check in CI | yes |
-| LICENSE | MIT, "Copyright (c) 2026 Captive Origins" |
+| LICENSE | MIT, now "Copyright (c) 2026 EXTANT APE" |
 | Keywords | base words, `content` and `developer-tools`, no family tags |
